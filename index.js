@@ -1,5 +1,9 @@
 const express = require("express");
 const puppeteer = require("puppeteer-extra");
+puppeteer.launch({
+    cacheDirectory: "/opt/render/.cache/puppeteer"
+});
+
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 const fs = require("fs");
 const path = require("path");

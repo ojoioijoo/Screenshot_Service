@@ -7,7 +7,7 @@ const path = require("path");
 puppeteer.use(StealthPlugin());
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Δημιουργία φακέλου screenshots, αν δεν υπάρχει
 const screenshotsDir = path.join(__dirname, "screenshots");
@@ -16,6 +16,12 @@ if (!fs.existsSync(screenshotsDir)) {
     console.log(`Created directory: ${screenshotsDir}`);
 }
 
+// Βασική διαδρομή (Root Route)
+app.get("/", (req, res) => {
+    res.send("Welcome to the Screenshot API! Use /screenshot with query parameters to take screenshots.");
+});
+
+// Διαδρομή για λήψη screenshots
 app.get("/screenshot", async (req, res) => {
     const url = req.query.url;
     const device = req.query.device || "desktop";
@@ -26,9 +32,9 @@ app.get("/screenshot", async (req, res) => {
 
     console.log("Launching browser...");
     const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         defaultViewport: null,
-        args: ["--start-maximized"]
+        args: ["--no-sandbox", "--disable-setuid-sandbox"]
     });
 
     const page = await browser.newPage();
